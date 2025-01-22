@@ -55,6 +55,10 @@ config BR2_KERNEL_HEADERS_6_11
 config BR2_KERNEL_HEADERS_6_12
 	bool "Linux 6.12.x kernel headers"
 	select BR2_TOOLCHAIN_HEADERS_AT_LEAST_6_12
+
+config BR2_KERNEL_HEADERS_6_13
+	bool "Linux 6.13.x kernel headers"
+	select BR2_TOOLCHAIN_HEADERS_AT_LEAST_6_13
 	select BR2_KERNEL_HEADERS_LATEST
 
 config BR2_KERNEL_HEADERS_VERSION

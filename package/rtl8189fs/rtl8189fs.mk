@@ -3,8 +3,8 @@
 # rtl8189fs
 #
 ################################################################################
-
-RTL8189FS_VERSION = 9a82349c2c40515f9d20b9f6721670f76b4e1c7a
+# batocera - bump 6.13 kernel
+RTL8189FS_VERSION = 6b4cfb5c37f10c099d330ece54436706161c2f2e
 RTL8189FS_SITE = $(call github,jwrdegoede,rtl8189ES_linux,$(RTL8189FS_VERSION))
 RTL8189FS_LICENSE = GPL-2.0
 
