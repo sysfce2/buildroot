@@ -39,6 +39,8 @@ LVM2_INSTALL_TARGET_OPTS = DESTDIR=$(TARGET_DIR)
 
 ifeq ($(BR2_PACKAGE_HAS_UDEV),y)
 LVM2_CONF_OPTS += --enable-udev_rules
+# batocera - need to determine udev version at configuration time
+LVM2_DEPENDENCIES += udev
 endif
 
 ifeq ($(BR2_PACKAGE_LIBSELINUX),y)
