@@ -11,10 +11,10 @@ SPIRV_LLVM_TRANSLATOR_VERSION = v19.1.4
 SPIRV_LLVM_TRANSLATOR_SITE = $(call github,KhronosGroup,SPIRV-LLVM-Translator,$(SPIRV_LLVM_TRANSLATOR_VERSION))
 SPIRV_LLVM_TRANSLATOR_LICENSE = NCSA
 SPIRV_LLVM_TRANSLATOR_LICENSE_FILES = LICENSE.TXT
-# batcoera - add staging
+# batocera - add staging
 SPIRV_LLVM_TRANSLATOR_INSTALL_STAGING = YES
 
-# batcoera - add packge build
+# batocera - add packge build
 SPIRV_LLVM_TRANSLATOR_DEPENDENCIES = clang llvm spirv-headers
 SPIRV_LLVM_TRANSLATOR_CONF_OPTS = \
 	-DLLVM_BUILD_TOOLS=ON \
@@ -33,6 +33,6 @@ HOST_SPIRV_LLVM_TRANSLATOR_CONF_OPTS = \
 	-DLLVM_EXTERNAL_PROJECTS="SPIRV-Headers" \
 	-DLLVM_EXTERNAL_SPIRV_HEADERS_SOURCE_DIR=$(HOST_DIR)/include
 
-# batcoera - add packge build
+# batocera - add packge build
 $(eval $(cmake-package))
 $(eval $(host-cmake-package))
