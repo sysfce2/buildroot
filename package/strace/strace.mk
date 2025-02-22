@@ -4,13 +4,15 @@
 #
 ################################################################################
 
-STRACE_VERSION = 6.11
+STRACE_VERSION = 6.13
 STRACE_SOURCE = strace-$(STRACE_VERSION).tar.xz
 STRACE_SITE = https://github.com/strace/strace/releases/download/v$(STRACE_VERSION)
 STRACE_LICENSE = LGPL-2.1+
 STRACE_LICENSE_FILES = COPYING LGPL-2.1-or-later
 STRACE_CPE_ID_VALID = YES
 STRACE_CONF_OPTS = --enable-mpers=no
+# batocera - needs wayland-scanner
+STRACE_DEPENDENCIES += host-wayland
 
 ifeq ($(BR2_PACKAGE_LIBUNWIND),y)
 STRACE_DEPENDENCIES += libunwind
