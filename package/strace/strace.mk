@@ -11,8 +11,6 @@ STRACE_LICENSE = LGPL-2.1+
 STRACE_LICENSE_FILES = COPYING LGPL-2.1-or-later
 STRACE_CPE_ID_VALID = YES
 STRACE_CONF_OPTS = --enable-mpers=no
-# batocera - needs wayland-scanner
-STRACE_DEPENDENCIES += host-wayland
 
 ifeq ($(BR2_PACKAGE_LIBUNWIND),y)
 STRACE_DEPENDENCIES += libunwind
