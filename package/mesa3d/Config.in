@@ -66,7 +66,6 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
 config BR2_PACKAGE_MESA3D_VULKAN_DRIVER
 	bool
 	select BR2_PACKAGE_MESA3D_DRIVER
-	select BR2_PACKAGE_MESA3D_DRI3              if BR2_PACKAGE_XORG7
 
 config BR2_PACKAGE_MESA3D_VIDEO_CODEC
 	bool
@@ -277,13 +276,12 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VIRGL
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_ZINK
 	bool "Gallium zink driver"
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
-	select BR2_PACKAGE_MESA3D_OPENGL_ES
-	select BR2_PACKAGE_MESA3D_OPENGL_EGL
-	select BR2_PACKAGE_MESA3D_OPENGL_GLX        if BR2_PACKAGE_XORG7
 	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
+	select BR2_PACKAGE_VULKAN_LOADER
 	help
 	  Zink is a Gallium driver that emits Vulkan API calls,
-	  providing OpenGL support on devices that only support Vulkan.
+	  providing OpenGL support on devices that only support
+	  Vulkan.
 
 # batocera - add d3d12
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_D3D12
@@ -374,7 +372,6 @@ config BR2_PACKAGE_MESA3D_VULKAN_DRIVER_HASWELL
 	depends on BR2_TOOLCHAIN_HAS_SYNC_4 || !BR2_PACKAGE_XORG7 # libxshmfence
 	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17 # memfd.h
 	depends on BR2_TOOLCHAIN_USES_GLIBC # ifunc, static_assert
-	select BR2_PACKAGE_MESA3D_DRI3 if BR2_PACKAGE_XORG7
 	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
 	help
 	  Vulkan driver for Ivy Bridge / Haswell / Broadwell support.
