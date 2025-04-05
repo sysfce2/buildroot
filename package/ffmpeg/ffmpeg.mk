@@ -9,7 +9,7 @@
 ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_RK3588)$(BR2_PACKAGE_BATOCERA_TARGET_BCM2712)$(BR2_PACKAGE_BATOCERA_TARGET_BCM2711),y)
     FFMPEG_VERSION = 7.0.2
 else
-    FFMPEG_VERSION = 7.1
+    FFMPEG_VERSION = 7.1.1
 endif
 FFMPEG_SOURCE = ffmpeg-$(FFMPEG_VERSION).tar.xz
 FFMPEG_SITE = https://ffmpeg.org/releases
@@ -560,6 +560,12 @@ FFMPEG_CONF_OPTS += --enable-vulkan --enable-libshaderc
 FFMPEG_DEPENDENCIES += vulkan-headers vulkan-loader shaderc
 else
 FFMPEG_CONF_OPTS += --disable-vulkan
+endif
+
+# batocera
+ifeq ($(BR2_PACKAGE_LIBLC3),y)
+FFMPEG_CONF_OPTS += --enable-liblc3
+FFMPEG_DEPENDENCIES += liblc3
 endif
 
 ifeq ($(BR2_mips)$(BR2_mipsel)$(BR2_mips64)$(BR2_mips64el),y)
