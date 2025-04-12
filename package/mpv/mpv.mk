@@ -8,7 +8,7 @@
 MPV_VERSION = 0.40.0
 MPV_SITE = $(call github,mpv-player,mpv,v$(MPV_VERSION))
 MPV_DEPENDENCIES = \
-	host-pkgconf ffmpeg libass libplacebo zlib \
+	host-pkgconf ffmpeg libass libdisplay-info libplacebo zlib \
 	$(if $(BR2_PACKAGE_LIBICONV),libiconv)
 MPV_LICENSE = GPL-2.0+
 MPV_LICENSE_FILES = LICENSE.GPL
