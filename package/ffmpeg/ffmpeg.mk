@@ -4,16 +4,11 @@
 #
 ################################################################################
 # batocera - upgrade to v7.1 (removed patches) so most packages use this version
-# maintain 7.0.2 RK3588 boards for hwaccel support
 # use a specialist repo for the RPi 4/5 & 
 # buildroot 4.4.x moved to a batocera package
 ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_BCM2712)$(BR2_PACKAGE_BATOCERA_TARGET_BCM2711),y)
     FFMPEG_VERSION = 6dbf87aefd7f491210abe1e043a1c228fa1439a0
     FFMPEG_SITE = $(call github,jc-kynesim,rpi-ffmpeg,$(FFMPEG_VERSION))
-else ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_RK3588),y)
-    FFMPEG_VERSION = 7.0.2
-    FFMPEG_SOURCE = ffmpeg-$(FFMPEG_VERSION).tar.xz
-    FFMPEG_SITE = https://ffmpeg.org/releases
 else
     FFMPEG_VERSION = 7.1.1
     FFMPEG_SOURCE = ffmpeg-$(FFMPEG_VERSION).tar.xz
@@ -70,6 +65,12 @@ FFMPEG_CONF_OPTS = \
 ifeq ($(BR2_PACKAGE_PULSEAUDIO),y)
 FFMPEG_CONF_OPTS += --enable-libpulse
 FFMPEG_DEPENDENCIES += pulseaudio
+endif
+
+# batocera - ensure rockchip hwaccel is enabled
+ifeq ($(BR2_PACKAGE_ROCKCHIP_MPP),y)
+FFMPEG_CONF_OPTS += --enable-rkmpp --enable-version3
+FFMPEG_DEPENDENCIES += rockchip-mpp
 endif
 
 # batocera - force dash demuxer & libxml2 for Kodi
@@ -570,11 +571,9 @@ FFMPEG_CONF_OPTS += --disable-vulkan
 endif
 
 # batocera
-ifneq ($(BR2_PACKAGE_BATOCERA_TARGET_RK3588),y)
-    ifeq ($(BR2_PACKAGE_LIBLC3),y)
-    FFMPEG_CONF_OPTS += --enable-liblc3
-    FFMPEG_DEPENDENCIES += liblc3
-    endif
+ifeq ($(BR2_PACKAGE_LIBLC3),y)
+FFMPEG_CONF_OPTS += --enable-liblc3
+FFMPEG_DEPENDENCIES += liblc3
 endif
 
 ifeq ($(BR2_mips)$(BR2_mipsel)$(BR2_mips64)$(BR2_mips64el),y)
