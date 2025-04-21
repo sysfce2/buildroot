@@ -4,7 +4,7 @@
 #
 ################################################################################
 # batocera bump - security fix
-XWAYLAND_VERSION = 24.1.3
+XWAYLAND_VERSION = 24.1.6
 XWAYLAND_SOURCE = xwayland-$(XWAYLAND_VERSION).tar.xz
 XWAYLAND_SITE = https://xorg.freedesktop.org/archive/individual/xserver
 XWAYLAND_LICENSE = MIT
@@ -89,5 +89,19 @@ XWAYLAND_DEPENDENCIES += libunwind
 else
 XWAYLAND_CONF_OPTS += -Dlibunwind=false
 endif
+
+# batocera
+ifeq ($(BR2_PACKAGE_LIBDECOR),y)
+XWAYLAND_CONF_OPTS += -Dlibdecor=true
+XWAYLAND_DEPENDENCIES += libdecor
+else
+XWAYLAND_CONF_OPTS += -Dlibdecor=false
+endif
+
+# batocera
+ifeq ($(BR2_PACKAGE_XAPP_XKBCOMP),y)
+XWAYLAND_DEPENDENCIES += xapp_xkbcomp
+endif
+
 
 $(eval $(meson-package))
