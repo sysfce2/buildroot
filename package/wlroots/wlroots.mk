@@ -13,7 +13,6 @@ WLROOTS_INSTALL_STAGING = YES
 WLROOTS_DEPENDENCIES = \
 	host-pkgconf \
 	host-wayland \
-	hwdata \
 	libinput \
 	libxkbcommon \
 	libegl \
@@ -21,9 +20,9 @@ WLROOTS_DEPENDENCIES = \
 	pixman \
 	seatd \
 	udev \
-    hwdata \
-    libdisplay-info \
-    libliftoff \
+	hwdata \
+	libdisplay-info \
+	libliftoff \
 	wayland \
 	wayland-protocols
 
