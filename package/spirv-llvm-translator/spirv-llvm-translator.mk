@@ -7,7 +7,7 @@
 # Generate version string using:
 #   git describe --tags --match 'v15*' --abbrev=40 origin/llvm_release_150
 # batocera-bump for llvm & libclc
-SPIRV_LLVM_TRANSLATOR_VERSION = v19.1.4
+SPIRV_LLVM_TRANSLATOR_VERSION = v20.1.2
 SPIRV_LLVM_TRANSLATOR_SITE = $(call github,KhronosGroup,SPIRV-LLVM-Translator,$(SPIRV_LLVM_TRANSLATOR_VERSION))
 SPIRV_LLVM_TRANSLATOR_LICENSE = NCSA
 SPIRV_LLVM_TRANSLATOR_LICENSE_FILES = LICENSE.TXT
