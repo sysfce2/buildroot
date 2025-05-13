@@ -11,6 +11,7 @@ menuconfig BR2_PACKAGE_MESA3D
 	select BR2_PACKAGE_ZLIB
 	select BR2_PACKAGE_PYTHON3              if BR2_PACKAGE_WAYLAND && BR2_PACKAGE_MESA3D_NEEDS_X11 # batocera
 	select BR2_PACKAGE_HOST_GLSLANG         if BR2_PACKAGE_BATOCERA_VULKAN && BR2_PACKAGE_MESA3D_NEEDS_X11 # batocera
+	#select BR2_PACKAGE_MESA3D_LLVM
 	help
 	  Mesa 3D, an open-source implementation of the OpenGL
 	  specification.
@@ -223,12 +224,20 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SVGA
 	help
 	  This is a virtual GPU driver for VMWare virtual machines.
 
-config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SWRAST
-	bool "Gallium swrast driver"
+config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SOFTPIPE
+	bool "Gallium softpipe driver"
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
 	help
 	  This is a software opengl implementation using the Gallium3D
 	  infrastructure.
+
+config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_LLVMPIPE
+	bool "Gallium llvm driver"
+	depends on BR2_PACKAGE_MESA3D_LLVM
+	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
+	help
+	  This is a software llvmp based opengl implementation
+	  using the Gallium3D infrastructure.
 
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_TEGRA
 	bool "Gallium tegra driver"
@@ -352,7 +361,7 @@ comment "intel vulkan needs a glibc toolchain w/ headers >= 3.17"
 config BR2_PACKAGE_MESA3D_VULKAN_DRIVER_SWRAST
 	bool "Vulkan swrast driver"
 	depends on BR2_PACKAGE_MESA3D_LLVM
-	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SWRAST
+	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_LLVMPIPE
 	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
 	help
 	  Vulkan swrast driver.
@@ -506,12 +515,6 @@ config BR2_PACKAGE_MESA3D_VIDEO_CODEC_VP9DEC
 	select BR2_PACKAGE_MESA3D_VIDEO_CODEC
 	help
 	  VP9 hardware decoding on supported hardware.
-
-config BR2_PACKAGE_MESA3D_OSMESA_GALLIUM
-	bool "OSMesa (Gallium) library"
-	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SWRAST
-	help
-	  The OSMesa API provides functions for off-screen rendering.
 
 if BR2_PACKAGE_MESA3D_DRIVER
 
