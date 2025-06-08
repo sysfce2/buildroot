@@ -7,7 +7,7 @@
 # When updating the version, please also update mesa3d-headers
 # also update glslang to the latest stable version
 
-MESA3D_VERSION = 25.1.2
+MESA3D_VERSION = 25.1.3
 MESA3D_SOURCE = mesa-$(MESA3D_VERSION).tar.xz
 MESA3D_SITE = https://archive.mesa3d.org
 MESA3D_LICENSE = MIT, SGI, Khronos
@@ -19,7 +19,7 @@ MESA3D_INSTALL_STAGING = YES
 
 MESA3D_PROVIDES =
 
-# batocera - add host-python-pyyaml & lua
+# batocera - add lua & host-libcurl
 MESA3D_DEPENDENCIES = \
 	host-bison \
 	host-flex \
@@ -31,14 +31,14 @@ MESA3D_DEPENDENCIES = \
 	zlib \
 	host-libcurl
 
+MESA3D_CONF_OPTS = \
+	    -Dgallium-rusticl=false \
+		-Dmicrosoft-clc=disabled
+
 # batocera
 ifeq ($(BR2_PACKAGE_DIRECTX_HEADERS),y)
 MESA3D_DEPENDENCIES += directx-headers
 endif
-
-MESA3D_CONF_OPTS = \
-	    -Dgallium-rusticl=false \
-		-Dmicrosoft-clc=disabled
 
 # batocera - remove redundant dri3 option for newer mesa
 ifeq ($(BR2_PACKAGE_MESA3D_DRIVER)$(BR2_PACKAGE_XORG7),yy)
@@ -58,12 +58,8 @@ endif
 else
 # Avoid automatic search of llvm-config
 MESA3D_CONF_OPTS += -Dllvm=disabled
-HOST_MESA3D_CONF_OPTS += -Dcpp_rtti=false
 endif
 
-# Disable opencl-icd: OpenCL lib will be named libOpenCL instead of
-# libMesaOpenCL and CL headers are installed
-# batocera - gallium-opencl is deprecated
 ifeq ($(BR2_PACKAGE_MESA3D_OPENCL),y)
 MESA3D_PROVIDES += libopencl
 MESA3D_DEPENDENCIES += clang libclc
@@ -163,7 +159,8 @@ endif
 
 # batocera - add spirv-tools for Mesa 25
 ifeq ($(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL),y)
-MESA3D_DEPENDENCIES += host-python-ply spirv-tools
+MESA3D_CONF_OPTS += -Dmesa-clc=system -Dprecomp-compiler=system
+MESA3D_DEPENDENCIES += host-python-ply host-mesa3d spirv-tools
 endif
 
 # batocera - add -Dmesa-clc=system & spirv-tools for Mesa 25
@@ -420,9 +417,9 @@ define MESA3D_GET_RUST_SUBMODULES
 	)
 endef
 
+# batocera
 MESA3D_PRE_CONFIGURE_HOOKS += MESA3D_GET_RUST_SUBMODULES
 HOST_MESA3D_PRE_CONFIGURE_HOOKS += MESA3D_GET_RUST_SUBMODULES
 
 $(eval $(meson-package))
-# batocera - add host package
 $(eval $(host-meson-package))
