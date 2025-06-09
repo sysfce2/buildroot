@@ -58,6 +58,7 @@ endif
 else
 # Avoid automatic search of llvm-config
 MESA3D_CONF_OPTS += -Dllvm=disabled
+HOST_MESA3D_CONF_OPTS += -Dcpp_rtti=false
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_OPENCL),y)
