@@ -119,6 +119,10 @@ endif
 ifeq ($(BR2_PACKAGE_LIBV4L),y)
 FFMPEG_DEPENDENCIES += libv4l
 FFMPEG_CONF_OPTS += --enable-libv4l2
+# batocera - rk3568 patches include --enable-v4l2-request support
+ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_RK3568),y)
+FFMPEG_CONF_OPTS += --enable-v4l2-request
+endif
 else
 FFMPEG_CONF_OPTS += --disable-libv4l2
 endif
