@@ -14,7 +14,11 @@ GST1_LIBAV_CONF_OPTS = -Ddoc=disabled
 
 # batocera - workaround, use ffmpeg-rockchip for RK devices
 ifeq ($(BR2_PACKAGE_ROCKCHIP_RGA),y)
-GST1_LIBAV_DEPENDENCIES += ffmpeg-rockchip
+GST1_LIBAV_DEPENDENCIES += rockchip-rga
+endif
+
+ifeq ($(BR2_PACKAGE_ROCKCHIP_MPP),y)
+GST1_LIBAV_DEPENDENCIES += ffmpeg-rockchip rockchip-mpp
 endif
 
 $(eval $(meson-package))
