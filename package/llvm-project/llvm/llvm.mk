@@ -271,9 +271,12 @@ HOST_LLVM_CONF_OPTS += \
 	-DLLVM_INCLUDE_BENCHMARKS=OFF
 
 # batocera - add perf & LLVMgold plugin options
-HOST_LLVM_CONF_OPTS += \
-	-DLLVM_USE_PERF=ON \
-	-DLLVM_BINUTILS_INCDIR=$(HOST_DIR)/lib/gcc/$(ARCH)-buildroot-linux-gnu/$(GCC_VERSION)/plugin/include
+HOST_LLVM_CONF_OPTS += -DLLVM_USE_PERF=ON
+ifeq ($(BR2_arm),y)
+HOST_LLVM_CONF_OPTS += -DLLVM_BINUTILS_INCDIR=$(HOST_DIR)/lib/gcc/$(ARCH)-buildroot-linux-gnueabihf/$(GCC_VERSION)/plugin/include
+else
+HOST_LLVM_CONF_OPTS += -DLLVM_BINUTILS_INCDIR=$(HOST_DIR)/lib/gcc/$(ARCH)-buildroot-linux-gnu/$(GCC_VERSION)/plugin/include
+endif
 HOST_LLVM_DEPENDENCIES += host-gcc-final
 
 ifeq ($(BR2_x86_64),y)
@@ -295,8 +298,13 @@ LLVM_CONF_OPTS += \
 	-DLLVM_INCLUDE_DOCS=OFF \
 	-DLLVM_INCLUDE_TESTS=OFF \
 	-DLLVM_INCLUDE_BENCHMARKS=OFF \
-	-DLLVM_USE_PERF=ON \
-	-DLLVM_BINUTILS_INCDIR=$(HOST_DIR)/lib/gcc/$(ARCH)-buildroot-linux-gnu/$(GCC_VERSION)/plugin/include
+	-DLLVM_USE_PERF=ON
+
+ifeq ($(BR2_arm),y)
+LLVM_CONF_OPTS += -DLLVM_BINUTILS_INCDIR=$(HOST_DIR)/lib/gcc/$(ARCH)-buildroot-linux-gnueabihf/$(GCC_VERSION)/plugin/include
+else
+LLVM_CONF_OPTS += -DLLVM_BINUTILS_INCDIR=$(HOST_DIR)/lib/gcc/$(ARCH)-buildroot-linux-gnu/$(GCC_VERSION)/plugin/include
+endif
 
 ifeq ($(BR2_x86_64),y)
 LLVM_CONF_OPTS += -DLLVM_USE_INTEL_JITEVENTS=ON
