@@ -11,9 +11,8 @@ XWAYLAND_LICENSE = MIT
 XWAYLAND_LICENSE_FILES = COPYING
 XWAYLAND_CPE_ID_VENDOR = x.org
 XWAYLAND_INSTALL_STAGING = YES
-# batocera - add mesa3d
+
 XWAYLAND_DEPENDENCIES = \
-    mesa3d \
 	libdrm \
 	pixman \
 	wayland \
@@ -25,6 +24,14 @@ XWAYLAND_DEPENDENCIES = \
 	xlib_libxshmfence \
 	xlib_xtrans \
 	xorgproto
+
+# batocera - add mesa3d-rpi4 / mesa3d
+ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_BCM2711),y)
+XWAYLAND_DEPENDENCIES += mesa3d-rpi4
+else
+XWAYLAND_DEPENDENCIES += mesa3d
+endif
+
 # batocera - remove the -Dxwayland_eglstream=false option
 XWAYLAND_CONF_OPTS = \
 	-Ddri3=true \
