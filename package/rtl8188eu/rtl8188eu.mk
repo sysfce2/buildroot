@@ -3,10 +3,9 @@
 # rtl8188eu
 #
 ################################################################################
-
-# batocera - bump for kernel 5.19
-RTL8188EU_VERSION = 96ecc776167a15cc7df4efc4f721ba5784c55c85
-RTL8188EU_SITE = $(call github,lwfinger,rtl8188eu,$(RTL8188EU_VERSION))
+# Batocera - Fix for 6.17+ kernels
+RTL8188EU_VERSION = 967dbaa7dc0641042b0f103e7679cd83f9bab131
+RTL8188EU_SITE = $(call github,benetti-engineering,rtl8188eu,$(RTL8188EU_VERSION))
 RTL8188EU_LICENSE = GPL-2.0, proprietary (rtl8188eufw.bin firmware blob)
 RTL8188EU_LICENSE_FILES = COPYING
 RTL8188EU_MODULE_MAKE_OPTS = CONFIG_RTL8188EU=m
