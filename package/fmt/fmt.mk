@@ -3,8 +3,8 @@
 # fmt
 #
 ################################################################################
-
-FMT_VERSION = 11.0.2
+# batocera - bump
+FMT_VERSION = 12.0.0
 FMT_SITE = https://github.com/fmtlib/fmt/releases/download/$(FMT_VERSION)
 FMT_SOURCE = fmt-$(FMT_VERSION).zip
 FMT_LICENSE = MIT with exception
