@@ -3,8 +3,8 @@
 # rtl8821cu
 #
 ################################################################################
-# batocera - kernel 6.15 support
-RTL8821CU_VERSION = 945c687aa1e62ee0b95b1ddd1dbfdbd513c30152
+# batocera - kernel 6.16+ support
+RTL8821CU_VERSION = 07fa9cf0fa8b0c08920c359c725dfc250e91422b
 RTL8821CU_SITE = $(call github,morrownr,8821cu-20210916,$(RTL8821CU_VERSION))
 RTL8821CU_LICENSE = GPL-2.0
 RTL8821CU_LICENSE_FILES = LICENSE
