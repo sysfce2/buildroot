@@ -23,6 +23,12 @@ if BR2_PACKAGE_MESA3D
 config BR2_PACKAGE_MESA3D_NEEDS_ELFUTILS
 	bool
 
+config BR2_PACKAGE_MESA3D_NEEDS_PRECOMP_COMPILER
+	bool
+	select BR2_PACKAGE_MESA3D_OPENCL
+	select BR2_PACKAGE_SPIRV_LLVM_TRANSLATOR
+	select BR2_PACKAGE_SPIRV_TOOLS
+
 config BR2_PACKAGE_MESA3D_LLVM
 	bool "llvm support"
 	depends on BR2_PACKAGE_LLVM_ARCH_SUPPORTS
@@ -46,19 +52,45 @@ comment "llvm support needs a toolchain not affected by GCC bug 64735"
 	depends on BR2_PACKAGE_LLVM_ARCH_SUPPORTS
 	depends on BR2_TOOLCHAIN_HAS_GCC_BUG_64735
 
-# clang and libclc dependencies are satisfied by
-# BR2_PACKAGE_MESA3D_LLVM
 config BR2_PACKAGE_MESA3D_OPENCL
 	bool "OpenCL support"
 	depends on BR2_PACKAGE_MESA3D_LLVM
 	depends on BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_R600 || \
+		BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_PANFROST || \
 		BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_RADEONSI || \
 		BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_IRIS || \
-		BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL
+		BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL || \
+		(BR2_PACKAGE_HOST_RUSTC_TARGET_ARCH_SUPPORTS && \
+		 BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER)
 	select BR2_PACKAGE_LLVM_RTTI
 	select BR2_PACKAGE_CLANG
 	select BR2_PACKAGE_LIBCLC
 	select BR2_PACKAGE_HAS_LIBOPENCL
+
+if BR2_PACKAGE_MESA3D_OPENCL
+# libclc dependency is satisfied by
+# BR2_PACKAGE_MESA3D_LLVM
+config BR2_PACKAGE_MESA3D_RUSTICL
+	bool "RustiCL"
+	depends on BR2_PACKAGE_HOST_RUSTC_TARGET_ARCH_SUPPORTS
+	depends on BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER
+	select BR2_PACKAGE_HOST_RUSTC
+	select BR2_PACKAGE_LLVM_DUMP
+	select BR2_PACKAGE_SPIRV_TOOLS
+	select BR2_PACKAGE_SPIRV_LLVM_TRANSLATOR
+	select BR2_PACKAGE_OPENCL_ICD_LOADER
+	help
+	  RustiCL is an OpenCL implementation written in Rust.
+	  By default, devices are disabled in RustiCL. If you want
+	  to enable a device, you need to set the environment variable
+	  RUSTICL_ENABLE to the driver you are using.
+
+	  https://docs.mesa3d.org/envvars.html#envvar-RUSTICL_ENABLE
+
+endif # BR2_PACKAGE_MESA3D_OPENCL
+
+config BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER
+	bool
 
 # inform the .mk file of gallium or vulkan driver selection
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
@@ -76,12 +108,6 @@ config BR2_PACKAGE_MESA3D_VIDEO_CODEC
 config BR2_PACKAGE_MESA3D_DRIVER
 	bool
 	select BR2_PACKAGE_XLIB_LIBXSHMFENCE if BR2_PACKAGE_XORG7
-
-# Gallium xa state tracker.
-# Quote from mesa3d meson.build: "XA state tracker requires at least
-# one of the following gallium drivers: nouveau, freedreno, i915, svga.
-config BR2_PACKAGE_MESA3D_NEEDS_XA
-	bool
 
 # OpenGL GLX and Gallium VDPAU both needs X11
 config BR2_PACKAGE_MESA3D_NEEDS_X11
@@ -139,8 +165,8 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_IRIS
 	bool "Gallium iris driver"
 	depends on BR2_PACKAGE_MESA3D_LLVM
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
-	select BR2_PACKAGE_SPIRV_LLVM_TRANSLATOR
-	select BR2_PACKAGE_SPIRV_TOOLS
+	select BR2_PACKAGE_MESA3D_NEEDS_PRECOMP_COMPILER
+	select BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER
 	help
 	  Mesa driver for iris-based Intel GPUs.
 
@@ -156,9 +182,10 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_LIMA
 	  Mesa driver for ARM Mali Utgard GPUs.
 
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_LLVMPIPE
-	bool "Gallium llvm driver"
+	bool "Gallium llvmpipe driver"
 	depends on BR2_PACKAGE_MESA3D_LLVM
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
+	select BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER
 	help
 	  This is a llvm opengl implementation using the Gallium3D
 	  infrastructure.
@@ -170,19 +197,25 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_NOUVEAU
 	bool "Gallium nouveau driver"
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
 	select BR2_PACKAGE_LIBDRM_NOUVEAU
-	select BR2_PACKAGE_MESA3D_NEEDS_XA
 	select BR2_PACKAGE_LLVM_RTTI if BR2_PACKAGE_MESA3D_LLVM
+	select BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER
 	help
 	  Supports all Nvidia GPUs.
 
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_PANFROST
 	bool "Gallium panfrost driver"
 	depends on BR2_TOOLCHAIN_HAS_SYNC_4 || !BR2_PACKAGE_XORG7 # libxshmfence
+	depends on BR2_PACKAGE_MESA3D_LLVM
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
+	select BR2_PACKAGE_MESA3D_NEEDS_PRECOMP_COMPILER
+	select BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER
 	select BR2_PACKAGE_MESA3D_OPENGL_EGL
 	select BR2_PACKAGE_SPIRV_TOOLS
 	help
 	  Mesa driver for ARM Mali Midgard and Bifrost GPUs.
+
+comment "panfrost driver needs llvm"
+	depends on !BR2_PACKAGE_MESA3D_LLVM
 
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_R300
 	bool "Gallium Radeon R300 driver"
@@ -228,6 +261,7 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_RADEONSI
 	select BR2_PACKAGE_LLVM_AMDGPU
 	select BR2_PACKAGE_ELFUTILS
 	select BR2_PACKAGE_MESA3D_NEEDS_ELFUTILS
+	select BR2_PACKAGE_MESA3D_RUSTICL_SUPPORTED_DRIVER
 	help
 	  Driver for ATI/AMD Radeon HD7000/HD8000/Rx200 GPUs.
 
@@ -236,7 +270,6 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_SVGA
 	depends on BR2_i386 || BR2_x86_64
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
 	select BR2_PACKAGE_LIBDRM_VMWGFX
-	select BR2_PACKAGE_MESA3D_NEEDS_XA
 	help
 	  This is a virtual GPU driver for VMWare virtual machines.
 
@@ -252,19 +285,18 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_TEGRA
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_NOUVEAU
 	select BR2_PACKAGE_LIBDRM_NOUVEAU
-	select BR2_PACKAGE_MESA3D_NEEDS_XA
 	help
 	  Adds support for Nvidia Tegra GPUs, requires nouveau.
 
 config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_V3D
 	bool "Gallium v3d driver"
-	depends on BR2_arm || BR2_aarch64 # batocera
+	depends on (BR2_arm && BR2_ARM_CPU_HAS_NEON) || BR2_aarch64
 	depends on BR2_TOOLCHAIN_HAS_SYNC_4 || !BR2_PACKAGE_XORG7 # libxshmfence
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
 	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VC4 # runtime
 	select BR2_PACKAGE_MESA3D_OPENGL_EGL
 	help
-	  Driver for Broadcom VC6 (rpi4) GPUs (needs vc4).
+	  Driver for Broadcom VC6/7 (rpi4/5) GPUs (needs vc4).
 
 	  It requires a kernel 4.18+ with DRM V3D support enabled:
 
@@ -301,28 +333,6 @@ config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_ZINK
 	  providing OpenGL support on devices that only support
 	  Vulkan.
 
-# batocera - add d3d12
-config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_D3D12
-	bool "Gallium Direct3D 12 driver"
-	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
-	select BR2_PACKAGE_MESA3D_OPENGL_ES
-	select BR2_PACKAGE_MESA3D_OPENGL_EGL
-	select BR2_PACKAGE_MESA3D_OPENGL_GLX        if BR2_PACKAGE_XORG7
-	help
-	  The D3D12 driver emits D3D12 API calls instead of targeting a specific GPU architecture.
-	  This can be used to get full desktop OpenGL support on Windows devices through WSL.
-
-# batocera - add lavapipe
-config BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_LAVAPIPE
-	bool "Vulkan LLVM software-based driver"
-	select BR2_PACKAGE_MESA3D_GALLIUM_DRIVER
-	select BR2_PACKAGE_MESA3D_OPENGL_ES
-	select BR2_PACKAGE_MESA3D_OPENGL_EGL
-	select BR2_PACKAGE_MESA3D_OPENGL_GLX        if BR2_PACKAGE_XORG7
-	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
-	help
-	  The LavaPipe driver is a software-based Vulkan implementation leveraging Mesa and LLVM.
-
 config BR2_PACKAGE_MESA3D_VDPAU
 	bool "Gallium VDPAU state tracker"
 	depends on BR2_PACKAGE_XORG7
@@ -346,10 +356,18 @@ comment "Vulkan drivers"
 config BR2_PACKAGE_MESA3D_VULKAN_DRIVER_BROADCOM
 	bool "Vulkan broadcom driver"
 	depends on BR2_arm || BR2_aarch64
-	depends on BR2_TOOLCHAIN_HAS_SYNC_4 # dri3/libxshmfence
+	depends on BR2_TOOLCHAIN_HAS_SYNC_4 # libxshmfence
 	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
 	help
 	  Vulkan broadcom driver.
+
+config BR2_PACKAGE_MESA3D_VULKAN_DRIVER_IMAGINATION
+	bool "Vulkan imagination driver (experimental)"
+	depends on BR2_arm || BR2_aarch64
+	depends on BR2_TOOLCHAIN_HAS_SYNC_4 || !BR2_PACKAGE_XORG7 # libxshmfence
+	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
+	help
+	  Vulkan imagination driver.
 
 config BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL
 	bool "Vulkan Intel driver"
@@ -357,9 +375,8 @@ config BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL
 	depends on BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_17 # memfd.h
 	depends on BR2_TOOLCHAIN_USES_GLIBC # ifunc, static_assert
 	depends on BR2_PACKAGE_MESA3D_LLVM
+	select BR2_PACKAGE_MESA3D_NEEDS_PRECOMP_COMPILER
 	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
-	select BR2_PACKAGE_SPIRV_LLVM_TRANSLATOR
-	select BR2_PACKAGE_SPIRV_TOOLS
 	help
 	  Vulkan driver for Intel hardware from Ivy Bridge onward.
 
@@ -455,8 +472,6 @@ config BR2_PACKAGE_MESA3D_VULKAN_DRIVER_VIRTIO
 	select BR2_PACKAGE_MESA3D_VULKAN_DRIVER
 	help
 	  Vulkan VirtIO (venus) driver.
-
-comment "Off-screen Rendering"
 
 # batocera - codecs
 config BR2_PACKAGE_MESA3D_VIDEO_CODEC_VC1DEC

@@ -10,9 +10,9 @@ LLVM_CMAKE_SOURCE = cmake-$(LLVM_CMAKE_VERSION).src.tar.xz
 LLVM_CMAKE_LICENSE = Apache-2.0 with exceptions
 
 define HOST_LLVM_CMAKE_INSTALL_CMDS
-    # batocera - fix Modules directory below...
 	mkdir -p $(HOST_DIR)/lib/cmake/llvm/Modules
 	cp -Rv $(@D)/Modules/* $(HOST_DIR)/lib/cmake/llvm/Modules
+	ln -sf $(HOST_DIR)/lib/cmake/llvm/Modules/* $(HOST_DIR)/lib/cmake/llvm/
 endef
 
 $(eval $(host-generic-package))
