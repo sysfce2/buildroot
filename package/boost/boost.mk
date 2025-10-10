@@ -3,8 +3,8 @@
 # boost
 #
 ################################################################################
-
-BOOST_VERSION = 1.83.0
+# batocera - bump
+BOOST_VERSION = 1.89.0
 BOOST_SOURCE = boost_$(subst .,_,$(BOOST_VERSION)).tar.bz2
 BOOST_SITE = https://archives.boost.io/release/$(BOOST_VERSION)/source
 BOOST_INSTALL_STAGING = YES
