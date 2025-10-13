@@ -50,9 +50,10 @@ else
 MESA3D_CONF_OPTS += -Dllvm=disabled
 endif
 
+# batocera - use host packages
 ifeq ($(BR2_PACKAGE_MESA3D_OPENCL),y)
 MESA3D_PROVIDES += libopencl
-MESA3D_DEPENDENCIES += clang libclc
+MESA3D_DEPENDENCIES += host-clang host-libclc
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_RUSTICL),y)
