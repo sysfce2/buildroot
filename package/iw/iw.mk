@@ -3,8 +3,8 @@
 # iw
 #
 ################################################################################
-
-IW_VERSION = 5.19
+# batocera - bump
+IW_VERSION = 6.17
 IW_SOURCE = iw-$(IW_VERSION).tar.xz
 IW_SITE = $(BR2_KERNEL_MIRROR)/software/network/iw
 IW_LICENSE = ISC
