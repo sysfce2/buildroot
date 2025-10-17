@@ -3,8 +3,8 @@
 # harfbuzz
 #
 ################################################################################
-
-HARFBUZZ_VERSION = 10.0.1
+# batocera - bump
+HARFBUZZ_VERSION = 12.0.0
 HARFBUZZ_SITE = https://github.com/harfbuzz/harfbuzz/releases/download/$(HARFBUZZ_VERSION)
 HARFBUZZ_SOURCE = harfbuzz-$(HARFBUZZ_VERSION).tar.xz
 HARFBUZZ_LICENSE = MIT, ISC (ucdn library)
