@@ -5,8 +5,8 @@
 ################################################################################
 # batocera - bump for ffmpeg update. remove 0001 patch
 # move from waf to meson package
-MPV_VERSION = 0.40.0
-MPV_SITE = $(call github,mpv-player,mpv,v$(MPV_VERSION))
+MPV_VERSION = bbafb74880987cc7899fe196e8265088d6627a3c
+MPV_SITE = $(call github,mpv-player,mpv,$(MPV_VERSION))
 MPV_DEPENDENCIES = \
 	host-pkgconf ffmpeg libass libdisplay-info libplacebo zlib \
 	$(if $(BR2_PACKAGE_LIBICONV),libiconv)
@@ -159,12 +159,13 @@ MPV_CONF_OPTS += -Dpulse=disabled
 endif
 
 # SDL support
+# batocera - expand
 # Sdl2 requires 64-bit sync intrinsics
-ifeq ($(BR2_TOOLCHAIN_HAS_SYNC_8)$(BR2_PACKAGE_SDL2),yy)
-MPV_CONF_OPTS += -Dsdl2=enabled
-MPV_DEPENDENCIES += sdl2
+ifeq ($(BR2_TOOLCHAIN_HAS_SYNC_8)$(BR2_PACKAGE_SDL2)$(BR2_PACKAGE_SDL2_MIXER),yyy)
+MPV_CONF_OPTS += -Dsdl2-gamepad=enabled -Dsdl2-audio=enabled -Dsdl2-video=enabled
+MPV_DEPENDENCIES += sdl2 sdl2_mixer
 else
-MPV_CONF_OPTS += -Dsdl2=disabled
+MPV_CONF_OPTS += -Dsdl2-gamepad=disabled -Dsdl2-audio=disabled -Dsdl2-video=disabled
 endif
 
 # Raspberry Pi support - batocera: no rpi meson option
@@ -264,9 +265,16 @@ endif
 
 # batocera - extend vdpau support
 ifeq ($(BR2_PACKAGE_LIBVDPAU)$(BR2_PACKAGE_XORG7),yy)
-MPV_CONF_OPTS += -Dvdpau-gl-x11=enabled
+MPV_CONF_OPTS += -Dvdpau=enabled -Dvdpau-gl-x11=enabled
 else
-MPV_CONF_OPTS += -Dvdpau-gl-x11=disabled
+MPV_CONF_OPTS += -Dvdpau=disabled -Dvdpau-gl-x11=disabled
 endif
 
 $(eval $(meson-package))
+
+# batcoera - add by board type (patched) currently
+ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_RK3568),y)
+MPV_CONF_OPTS += -Dv4l2request=enabled
+else
+MPV_CONF_OPTS += -Dv4l2request=disabled
+endif
