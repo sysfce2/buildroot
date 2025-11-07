@@ -275,6 +275,4 @@ $(eval $(meson-package))
 # batcoera - add by board type (patched) currently
 ifeq ($(BR2_PACKAGE_BATOCERA_TARGET_RK3568),y)
 MPV_CONF_OPTS += -Dv4l2request=enabled
-else
-MPV_CONF_OPTS += -Dv4l2request=disabled
 endif
