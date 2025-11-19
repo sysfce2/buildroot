@@ -3,9 +3,9 @@
 # mesa3d
 #
 ################################################################################
-
+# batocera - remove 0001 patch file with bump
 # When updating the version, please also update mesa3d-headers
-MESA3D_VERSION = 25.2.6
+MESA3D_VERSION = 25.3.0
 MESA3D_SOURCE = mesa-$(MESA3D_VERSION).tar.xz
 MESA3D_SITE = https://archive.mesa3d.org
 MESA3D_LICENSE = MIT, SGI, Khronos
@@ -98,11 +98,12 @@ MESA3D_CONF_OPTS += \
 	-Dglx=disabled
 endif
 
-ifeq ($(BR2_ARM_CPU_HAS_NEON),y)
-MESA3D_CONF_OPTS += -Dgallium-vc4-neon=auto
-else
-MESA3D_CONF_OPTS += -Dgallium-vc4-neon=disabled
-endif
+# batocera - depricated patch
+#ifeq ($(BR2_ARM_CPU_HAS_NEON),y)
+#MESA3D_CONF_OPTS += -Dgallium-vc4-neon=auto
+#else
+#MESA3D_CONF_OPTS += -Dgallium-vc4-neon=disabled
+#endif
 
 # Drivers
 
@@ -133,7 +134,7 @@ MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_ZINK)     += zink
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_AMD)       += amd
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_BROADCOM) += broadcom
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_FREEDRENO) += freedreno
-MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_IMAGINATION) += imagination-experimental
+MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_IMAGINATION) += imagination
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL)   += intel
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_HASWELL)   += intel_hasvk
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_PANFROST)  += panfrost
@@ -297,12 +298,13 @@ else
 MESA3D_CONF_OPTS += -Dlibunwind=disabled
 endif
 
-ifeq ($(BR2_PACKAGE_MESA3D_VDPAU),y)
-MESA3D_DEPENDENCIES += libvdpau
-MESA3D_CONF_OPTS += -Dgallium-vdpau=enabled
-else
-MESA3D_CONF_OPTS += -Dgallium-vdpau=disabled
-endif
+# batocera - depricated in 25.3
+#ifeq ($(BR2_PACKAGE_MESA3D_VDPAU),y)
+#MESA3D_DEPENDENCIES += libvdpau
+#MESA3D_CONF_OPTS += -Dgallium-vdpau=enabled
+#else
+#MESA3D_CONF_OPTS += -Dgallium-vdpau=disabled
+#endif
 
 ifeq ($(BR2_PACKAGE_LM_SENSORS),y)
 MESA3D_CONF_OPTS += -Dlmsensors=enabled
@@ -356,10 +358,10 @@ else
 MESA3D_CONF_OPTS += -Dglvnd=disabled
 endif
 
+# batocera - remove	-Dgallium-vdpau=disabled
 HOST_MESA3D_CONF_OPTS = \
 	-Dglvnd=disabled \
 	-Dgallium-drivers=$(subst $(space),$(comma),$(HOST_MESA3D_GALLIUM_DRIVERS-y)) \
-	-Dgallium-vdpau=disabled \
 	-Dinstall-mesa-clc=true \
 	-Dmesa-clc=enabled \
 	-Dplatforms= \
