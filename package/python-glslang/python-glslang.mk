@@ -12,6 +12,7 @@ PYTHON_GLSLANG_LICENSE_FILES = LICENSE.txt
 # add host-spirv-tools also
 HOST_PYTHON_GLSLANG_DEPENDENCIES = host-python3 host-spirv-tools
 
-HOST_PYTHON_GLSLANG_CONF_OPTS = -DALLOW_EXTERNAL_SPIRV_TOOLS=ON
+HOST_PYTHON_GLSLANG_CONF_OPTS = -DALLOW_EXTERNAL_SPIRV_TOOLS=ON \
+                                -DGLSLANG_TESTS=OFF
 
 $(eval $(host-cmake-package))
