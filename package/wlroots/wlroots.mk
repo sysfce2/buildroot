@@ -40,6 +40,14 @@ ifeq ($(BR2_PACKAGE_HAS_LIBGBM),y)
 WLROOTS_CONF_OPTS += -Dallocators=gbm
 endif
 
+# batocera
+ifeq ($(BR2_PACKAGE_LCMS2),y)
+WLROOTS_CONF_OPTS += -Dcolor-management=enabled
+WLROOTS_DEPENDENCIES += lcms2
+else
+WLROOTS_CONF_OPTS += -Dcolor-management=disabled
+endif
+
 ifeq ($(BR2_PACKAGE_WLROOTS_X11),y)
 WLROOTS_BACKENDS += x11
 WLROOTS_DEPENDENCIES += libxcb xcb-util-wm xcb-util-renderutil xlib_libX11

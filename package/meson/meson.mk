@@ -3,8 +3,8 @@
 # meson
 #
 ################################################################################
-
-MESON_VERSION = 1.6.0
+# batocera - bump
+MESON_VERSION = 1.6.1
 MESON_SITE = https://github.com/mesonbuild/meson/releases/download/$(MESON_VERSION)
 MESON_LICENSE = Apache-2.0
 MESON_LICENSE_FILES = COPYING

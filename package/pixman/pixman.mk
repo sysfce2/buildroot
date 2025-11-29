@@ -4,7 +4,7 @@
 #
 ################################################################################
 # batocera - bump (move to meson)
-PIXMAN_VERSION = 0.43.4
+PIXMAN_VERSION = 0.46.4
 PIXMAN_SOURCE = pixman-$(PIXMAN_VERSION).tar.xz
 PIXMAN_SITE = https://xorg.freedesktop.org/releases/individual/lib
 PIXMAN_LICENSE = MIT
@@ -19,7 +19,6 @@ HOST_PIXMAN_DEPENDENCIES = host-pkgconf
 PIXMAN_CONF_OPTS = \
 	-Dgtk=disabled \
 	-Dloongson-mmi=disabled \
-	-Diwmmxt=disabled \
 	-Dtests=disabled \
 	-Ddemos=disabled
 
