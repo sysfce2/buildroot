@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-PYTHON_FLIT_CORE_VERSION = 3.10.1
+PYTHON_FLIT_CORE_VERSION = 3.12.0
 PYTHON_FLIT_CORE_SOURCE = flit_core-$(PYTHON_FLIT_CORE_VERSION).tar.gz
 PYTHON_FLIT_CORE_SITE = https://files.pythonhosted.org/packages/d5/ae/09427bea9227a33ec834ed5461432752fd5d02b14f93dd68406c91684622
 PYTHON_FLIT_CORE_LICENSE = BSD-3-Clause
