@@ -5,7 +5,7 @@
 ################################################################################
 # batocera - bump for ffmpeg update. remove 0001 patch
 # move from waf to meson package
-MPV_VERSION = bbafb74880987cc7899fe196e8265088d6627a3c
+MPV_VERSION = v0.41.0
 MPV_SITE = $(call github,mpv-player,mpv,$(MPV_VERSION))
 MPV_DEPENDENCIES = \
 	host-pkgconf ffmpeg libass libdisplay-info libplacebo zlib \
@@ -226,9 +226,9 @@ endif
 
 # batocera - add cuda
 ifeq ($(BR2_PACKAGE_NVIDIA_OPEN_DRIVER_CUDA),y)
-MPV_CONF_OPTS += -Dcuda-hwaccel=enabled
+MPV_CONF_OPTS += -Dcuda-hwaccel=enabled -Dcuda-interop=enabled
 else
-MPV_CONF_OPTS += -Dcuda-hwaccel=disabled
+MPV_CONF_OPTS += -Dcuda-hwaccel=disabled -Dcuda-interop=disabled
 endif
 
 # batocera - add vulkan
