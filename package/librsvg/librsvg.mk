@@ -14,11 +14,13 @@ LIBRSVG_LICENSE_FILES = COPYING.LIB
 LIBRSVG_CPE_ID_VENDOR = gnome
 
 LIBRSVG_CONF_ENV = \
+    $(PKG_CARGO_ENV) \
 	LIBS=$(TARGET_NLS_LIBS) \
 	RUST_TARGET=$(RUSTC_TARGET_NAME)
 
 # batocera - add ninja env for rust nonsense
 LIBRSVG_NINJA_ENV = \
+	$(PKG_CARGO_ENV) \
 	CARGO_HOME=$(HOST_DIR)/share/cargo \
 	PKG_CONFIG_ALLOW_CROSS=1 \
 	PKG_CONFIG_SYSROOT_DIR=$(STAGING_DIR) \
@@ -27,6 +29,7 @@ LIBRSVG_NINJA_ENV = \
 	RUSTFLAGS="-C link-arg=--sysroot=$(STAGING_DIR)"
 	
 LIBRSVG_CONF_OPTS = \
+	-Dtriplet=$(RUSTC_TARGET_NAME) \
 	-Dpkg_config_path=$(STAGING_DIR)/usr/lib/pkgconfig \
 	-Dpixbuf-loader=disabled \
 	-Dtests=false \
@@ -35,6 +38,7 @@ LIBRSVG_CONF_OPTS = \
 	-Drsvg-convert=enabled
 
 LIBRSVG_DEPENDENCIES = \
+    host-pkgconf \
 	cairo \
 	gdk-pixbuf \
 	host-gdk-pixbuf \
