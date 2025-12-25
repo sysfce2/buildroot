@@ -3,8 +3,8 @@
 # rpi-firmware
 #
 ################################################################################
-# batocera (update) - Aligns to kernel version: 6.12.51
-RPI_FIRMWARE_VERSION = 4110ba807ae84b343da239fc30db49ea426f9c5d
+# batocera (update) - Aligns to kernel version: 6.12.62
+RPI_FIRMWARE_VERSION = f1ea7092589bc9627c23916132baa7841932b707
 RPI_FIRMWARE_SITE = $(call github,raspberrypi,firmware,$(RPI_FIRMWARE_VERSION))
 RPI_FIRMWARE_LICENSE = BSD-3-Clause
 RPI_FIRMWARE_LICENSE_FILES = boot/LICENCE.broadcom
