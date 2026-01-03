@@ -432,5 +432,13 @@ define QT6BASE_RM_USR_MKSPECS
 endef
 QT6BASE_TARGET_FINALIZE_HOOKS += QT6BASE_RM_USR_MKSPECS
 
+# batocera - needed for qtwaylandscanner
+ifeq ($(BR2_PACKAGE_WAYLAND),y)
+HOST_QT6BASE_CONF_OPTS += -DFEATURE_wayland=ON
+HOST_QT6BASE_DEPENDENCIES += host-wayland
+else
+HOST_QT6BASE_CONF_OPTS += -DFEATURE_wayland=OFF
+endif
+
 $(eval $(cmake-package))
 $(eval $(host-cmake-package))
