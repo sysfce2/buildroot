@@ -24,8 +24,8 @@ WEBKITGTK_CMAKE_BACKEND = ninja
 total_memory_kb := $(shell grep MemTotal /proc/meminfo | awk '{print $$2}')
 memory_based_jobs := $(shell echo $$(( $(total_memory_kb) / 1024 / 1024 / 4 + 1)))
 cpu_threads := $(shell nproc)
-jobs := $(shell echo $$(( $(memory_based_jobs) < $(cpu_threads) ? $(memory_based_jobs) : $(cpu_threads) )))
-WEBKITGTK_BUILD_OPTS= -j$(jobs) -- -l$(jobs)
+njobs := $(shell echo $$(( $(memory_based_jobs) < $(cpu_threads) ? $(memory_based_jobs) : $(cpu_threads) )))
+WEBKITGTK_BUILD_OPTS= -j$(njobs) -- -l$(njobs)
 
 # Buildroot adds support for ccache through its
 # toolchain-wrapper, so tell webkitgtk not to mess with it.
