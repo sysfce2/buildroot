@@ -40,8 +40,8 @@ ifeq ($(BR2_PACKAGE_HAS_LIBGBM),y)
 WLROOTS_CONF_OPTS += -Dallocators=gbm
 endif
 
-# batocera
-ifeq ($(BR2_PACKAGE_LCMS2),y)
+# batocera. not for older wlroots (RPi4)
+ifeq ($(BR2_PACKAGE_LCMS2)$(BR2_PACKAGE_BATOCERA_TARGET_BCM2711),yn)
 WLROOTS_CONF_OPTS += -Dcolor-management=enabled
 WLROOTS_DEPENDENCIES += lcms2
 else
