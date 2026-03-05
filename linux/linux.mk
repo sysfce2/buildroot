@@ -513,10 +513,13 @@ endif
 # issues.
 # The call to disable gcc-plugins is a stop-gap measure:
 #   http://lists.busybox.net/pipermail/buildroot/2020-May/282727.html
+
+# Batocera - allow recursive directories so we can place them in say /boot/dts/qcom
+
 define LINUX_BUILD_CMDS
 	$(call KCONFIG_DISABLE_OPT,CONFIG_GCC_PLUGINS)
 	$(foreach dts,$(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_PATH)), \
-		cp -f $(dts) $(LINUX_ARCH_PATH)/boot/dts/
+		cp -r -f $(dts) $(LINUX_ARCH_PATH)/boot/dts/
 	)
 	$(LINUX_MAKE_ENV) $(BR2_MAKE) $(LINUX_MAKE_FLAGS) -C $(@D) all
 	$(LINUX_MAKE_ENV) $(BR2_MAKE) $(LINUX_MAKE_FLAGS) -C $(@D) $(LINUX_TARGET_NAME)
