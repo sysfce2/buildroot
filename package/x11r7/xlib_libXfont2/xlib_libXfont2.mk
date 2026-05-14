@@ -3,7 +3,7 @@
 # xlib_libXfont2
 #
 ################################################################################
-# batocera - bump
+
 XLIB_LIBXFONT2_VERSION = 2.0.7
 XLIB_LIBXFONT2_SOURCE = libXfont2-$(XLIB_LIBXFONT2_VERSION).tar.xz
 XLIB_LIBXFONT2_SITE = https://xorg.freedesktop.org/archive/individual/lib

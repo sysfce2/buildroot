@@ -3,8 +3,8 @@
 # sdl2
 #
 ################################################################################
-# batocera - bump
-SDL2_VERSION = 2.32.8
+
+SDL2_VERSION = 2.32.10
 SDL2_SOURCE = SDL2-$(SDL2_VERSION).tar.gz
 SDL2_SITE = http://www.libsdl.org/release
 SDL2_LICENSE = Zlib
@@ -75,11 +75,6 @@ SDL2_CONF_OPTS += --enable-static
 # batocera - disable hidapi
 SDL2_CONF_OPTS += --disable-hidapi
 
-# batocera - sdl2 set the rpi video output from the host name
-ifeq ($(BR2_PACKAGE_RPI_USERLAND),y)
-SDL2_CONF_OPTS += --host=arm-raspberry-linux-gnueabihf
-endif
-
 # batocera - Used in screen rotation (SDL and Retroarch)
 ifeq ($(BR2_PACKAGE_ROCKCHIP_RGA),y)
 SDL2_DEPENDENCIES += rockchip-rga
@@ -124,21 +119,6 @@ ifeq ($(BR2_X86_CPU_HAS_3DNOW),y)
 SDL2_CONF_OPTS += --enable-3dnow
 else
 SDL2_CONF_OPTS += --disable-3dnow
-endif
-
-ifeq ($(BR2_PACKAGE_SDL2_DIRECTFB),y)
-SDL2_DEPENDENCIES += directfb
-SDL2_CONF_OPTS += --enable-video-directfb
-SDL2_CONF_ENV += ac_cv_path_DIRECTFBCONFIG=$(STAGING_DIR)/usr/bin/directfb-config
-else
-SDL2_CONF_OPTS += --disable-video-directfb
-endif
-
-ifeq ($(BR2_PACKAGE_SDL2_OPENGLES)$(BR2_PACKAGE_RPI_USERLAND),yy)
-SDL2_DEPENDENCIES += rpi-userland
-SDL2_CONF_OPTS += --enable-video-rpi
-else
-SDL2_CONF_OPTS += --disable-video-rpi
 endif
 
 # x-includes and x-libraries must be set for cross-compiling
@@ -186,6 +166,13 @@ else
 SDL2_CONF_OPTS += --disable-video-x11 --without-x
 endif
 
+ifeq ($(BR2_PACKAGE_SDL2_WAYLAND),y)
+SDL2_DEPENDENCIES += libegl libxkbcommon wayland wayland-protocols
+SDL2_CONF_OPTS += --enable-video-wayland
+else
+SDL2_CONF_OPTS += --disable-video-wayland
+endif
+
 ifeq ($(BR2_PACKAGE_SDL2_OPENGL),y)
 SDL2_CONF_OPTS += --enable-video-opengl
 SDL2_DEPENDENCIES += libgl
@@ -227,13 +214,6 @@ else
 SDL2_CONF_OPTS += --disable-video-kmsdrm
 endif
 
-# batocera - enable/disable Wayland video driver
-ifeq ($(BR2_PACKAGE_SDL2_WAYLAND),y)
-SDL2_DEPENDENCIES += wayland wayland-protocols libxkbcommon
-SDL2_CONF_OPTS += --enable-video-wayland
-else
-SDL2_CONF_OPTS += --disable-video-wayland
-endif
 
 # batocera - libdecor
 ifeq ($(BR2_PACKAGE_LIBDECOR),y)

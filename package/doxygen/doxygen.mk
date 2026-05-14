@@ -3,8 +3,8 @@
 # doxygen
 #
 ################################################################################
-# batcoera - bump
-DOXYGEN_VERSION = 1.15.0
+
+DOXYGEN_VERSION = 1.16.1
 DOXYGEN_SOURCE = doxygen-$(DOXYGEN_VERSION).src.tar.gz
 DOXYGEN_SITE = https://sourceforge.net/projects/doxygen/files/rel-$(DOXYGEN_VERSION)
 DOXYGEN_LICENSE = GPL-2.0

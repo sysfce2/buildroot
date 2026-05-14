@@ -5,7 +5,7 @@
 ################################################################################
 
 LIBSOUP3_VERSION_MAJOR = 3.6
-LIBSOUP3_VERSION = $(LIBSOUP3_VERSION_MAJOR).5
+LIBSOUP3_VERSION = $(LIBSOUP3_VERSION_MAJOR).6
 LIBSOUP3_SOURCE = libsoup-$(LIBSOUP3_VERSION).tar.xz
 LIBSOUP3_SITE = https://download.gnome.org/sources/libsoup/$(LIBSOUP3_VERSION_MAJOR)
 LIBSOUP3_LICENSE = LGPL-2.0+
@@ -28,8 +28,7 @@ LIBSOUP3_CONF_OPTS = \
 	-Dntlm=disabled \
 	-Dsysprof=disabled \
 	-Dtests=false \
-	-Dtls_check=false \
-	-Ddocs=disabled
+	-Dtls_check=false
 
 ifeq ($(BR2_PACKAGE_BROTLI),y)
 LIBSOUP3_CONF_OPTS += -Dbrotli=enabled
