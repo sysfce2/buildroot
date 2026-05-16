@@ -3,8 +3,8 @@
 # jpeg-turbo
 #
 ################################################################################
-# batocera - bump
-JPEG_TURBO_VERSION = 3.1.2
+
+JPEG_TURBO_VERSION = 3.1.4.1
 JPEG_TURBO_SOURCE = libjpeg-turbo-$(JPEG_TURBO_VERSION).tar.gz
 JPEG_TURBO_SITE = https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/$(JPEG_TURBO_VERSION)
 JPEG_TURBO_LICENSE = IJG (libjpeg), BSD-3-Clause (TurboJPEG), Zlib (SIMD)

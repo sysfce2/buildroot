@@ -30,12 +30,5 @@ HOST_XMLSTARLET_CONF_OPTS += \
 	--with-libxml-prefix=$(HOST_DIR) \
 	--with-libxslt-prefix=$(HOST_DIR)
 
-# Fix for libxml2 2.14+ compatibility
-define XMLSTARLET_FIX_LIBXML2_2_14
-	$(SED) 's/ATTRIBUTE_UNUSED/__attribute__((unused))/g' $(@D)/src/xml_pyx.c
-endef
-XMLSTARLET_POST_PATCH_HOOKS += XMLSTARLET_FIX_LIBXML2_2_14
-HOST_XMLSTARLET_POST_PATCH_HOOKS += XMLSTARLET_FIX_LIBXML2_2_14
-
 $(eval $(autotools-package))
 $(eval $(host-autotools-package))

@@ -3,7 +3,7 @@
 # genimage
 #
 ################################################################################
-# batocera - bump
+
 GENIMAGE_VERSION = 19
 GENIMAGE_SOURCE = genimage-$(GENIMAGE_VERSION).tar.xz
 GENIMAGE_SITE = https://github.com/pengutronix/genimage/releases/download/v$(GENIMAGE_VERSION)

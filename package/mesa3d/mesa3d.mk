@@ -3,9 +3,9 @@
 # mesa3d
 #
 ################################################################################
-# batocera - remove 0001 patch file with bump
+
 # When updating the version, please also update mesa3d-headers
-MESA3D_VERSION = 25.3.6
+MESA3D_VERSION = 26.1.0
 MESA3D_SOURCE = mesa-$(MESA3D_VERSION).tar.xz
 MESA3D_SITE = https://archive.mesa3d.org
 MESA3D_LICENSE = MIT, SGI, Khronos
@@ -50,10 +50,9 @@ else
 MESA3D_CONF_OPTS += -Dllvm=disabled
 endif
 
-# batocera - use host packages
 ifeq ($(BR2_PACKAGE_MESA3D_OPENCL),y)
 MESA3D_PROVIDES += libopencl
-MESA3D_DEPENDENCIES += host-clang host-libclc
+MESA3D_DEPENDENCIES += clang libclc
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_RUSTICL),y)
@@ -98,12 +97,11 @@ MESA3D_CONF_OPTS += \
 	-Dglx=disabled
 endif
 
-# batocera - depricated patch
-#ifeq ($(BR2_ARM_CPU_HAS_NEON),y)
-#MESA3D_CONF_OPTS += -Dgallium-vc4-neon=auto
-#else
-#MESA3D_CONF_OPTS += -Dgallium-vc4-neon=disabled
-#endif
+ifeq ($(BR2_ARM_CPU_HAS_NEON),y)
+MESA3D_CONF_OPTS += -Dgallium-vc4-neon=auto
+else
+MESA3D_CONF_OPTS += -Dgallium-vc4-neon=disabled
+endif
 
 # Drivers
 
@@ -129,15 +127,15 @@ MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_V3D)      += v3d
 MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VC4)      += vc4
 MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_VIRGL)    += virgl
 MESA3D_GALLIUM_DRIVERS-$(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_ZINK)     += zink
-# batocera - add amd, freedreno, intel_hasvk & panfrost
-# Vulkan Drivers
-MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_AMD)       += amd
+# Vulkan Drivers - # batocera - add freedreno & intel_hasvk
+MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_AMD) += amd
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_BROADCOM) += broadcom
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_FREEDRENO) += freedreno
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_IMAGINATION) += imagination
-MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL)   += intel
-MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_HASWELL)   += intel_hasvk
-MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_PANFROST)  += panfrost
+MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_INTEL) += intel
+MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_HASWELL) += intel_hasvk
+MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_PANFROST) += panfrost
+HOST_MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_PANFROST) += panfrost
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_SWRAST) += swrast
 MESA3D_VULKAN_DRIVERS-$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_VIRTIO) += virtio
 
@@ -150,14 +148,6 @@ MESA3D_VIDEO_CODECS-$(BR2_PACKAGE_MESA3D_VIDEO_CODEC_H265ENC)       += h265enc
 MESA3D_VIDEO_CODECS-$(BR2_PACKAGE_MESA3D_VIDEO_CODEC_AV1DEC)        += av1dec
 MESA3D_VIDEO_CODECS-$(BR2_PACKAGE_MESA3D_VIDEO_CODEC_AV1ENC)        += av1enc
 MESA3D_VIDEO_CODECS-$(BR2_PACKAGE_MESA3D_VIDEO_CODEC_VP9DEC)        += vp9dec
-
-# batocera
-# Vulkan Layers - helps with multi-GPU switching
-# batocera - shared-glapi is deprecated
-ifeq ($(BR2_PACKAGE_WAYLAND)$(BR2_PACKAGE_MESA3D_NEEDS_X11),yy)
-MESA3D_DEPENDENCIES += python3 host-glslang
-MESA3D_CONF_OPTS += -Dvulkan-layers=device-select,overlay
-endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER),)
 MESA3D_CONF_OPTS += \
@@ -179,16 +169,23 @@ endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_NEEDS_PRECOMP_COMPILER),y)
 MESA3D_CONF_OPTS += -Dmesa-clc=system -Dprecomp-compiler=system
-MESA3D_DEPENDENCIES += host-mesa3d spirv-tools
+MESA3D_DEPENDENCIES += host-mesa3d spirv-llvm-translator spirv-tools
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_VULKAN_DRIVER),)
 MESA3D_CONF_OPTS += \
+	-Ddisplay-info=disabled \
 	-Dvulkan-drivers=
 else
 MESA3D_DEPENDENCIES += host-python-glslang
 MESA3D_CONF_OPTS += \
 	-Dvulkan-drivers=$(subst $(space),$(comma),$(MESA3D_VULKAN_DRIVERS-y))
+ifeq ($(BR2_PACKAGE_LIBDISPLAY_INFO),y)
+MESA3D_DEPENDENCIES += libdisplay-info
+MESA3D_CONF_OPTS += -Ddisplay-info=enabled
+else
+MESA3D_CONF_OPTS += -Ddisplay-info=disabled
+endif
 endif
 
 # batocera - video codecs
@@ -255,6 +252,9 @@ endif
 ifeq ($(BR2_PACKAGE_WAYLAND),y)
 MESA3D_DEPENDENCIES += wayland wayland-protocols
 MESA3D_PLATFORMS += wayland
+ifeq ($(BR2_PACKAGE_MESA3D_LEGACY_BIND_WAYLAND_DISPLAY),y)
+MESA3D_CONF_OPTS += -Dlegacy-wayland=bind-wayland-display
+endif
 endif
 
 MESA3D_CONF_OPTS += \
@@ -298,14 +298,6 @@ else
 MESA3D_CONF_OPTS += -Dlibunwind=disabled
 endif
 
-# batocera - depricated in 25.3
-#ifeq ($(BR2_PACKAGE_MESA3D_VDPAU),y)
-#MESA3D_DEPENDENCIES += libvdpau
-#MESA3D_CONF_OPTS += -Dgallium-vdpau=enabled
-#else
-#MESA3D_CONF_OPTS += -Dgallium-vdpau=disabled
-#endif
-
 ifeq ($(BR2_PACKAGE_LM_SENSORS),y)
 MESA3D_CONF_OPTS += -Dlmsensors=enabled
 MESA3D_DEPENDENCIES += lm-sensors
@@ -322,13 +314,17 @@ endif
 
 # batocera icd.@0@.json vulkan files
 define MESA3D_VULKANJSON_X86_64
-        $(SED) s+"host_machine.cpu()"+"'x86_64'"+ $(@D)/src/intel/vulkan/meson.build \
-		    $(@D)/src/intel/vulkan_hasvk/meson.build $(@D)/src/amd/vulkan/meson.build
+	$(SED) "s/format(host_machine.cpu())/format('x86_64')/g" $(@D)/src/intel/vulkan/meson.build \
+		$(@D)/src/intel/vulkan_hasvk/meson.build $(@D)/src/amd/vulkan/meson.build
+	$(SED) "s/icd.' + vulkan_manifest_suffix/icd.x86_64' + vulkan_manifest_suffix/g" $(@D)/src/intel/vulkan/meson.build \
+		$(@D)/src/intel/vulkan_hasvk/meson.build $(@D)/src/amd/vulkan/meson.build
 endef
 
 define MESA3D_VULKANJSON_X86
-        $(SED) s+"host_machine.cpu()"+"'i686'"+ $(@D)/src/intel/vulkan/meson.build \
-		    $(@D)/src/intel/vulkan_hasvk/meson.build $(@D)/src/amd/vulkan/meson.build
+	$(SED) "s/format(host_machine.cpu())/format('i686')/g" $(@D)/src/intel/vulkan/meson.build \
+		$(@D)/src/intel/vulkan_hasvk/meson.build $(@D)/src/amd/vulkan/meson.build
+	$(SED) "s/icd.' + vulkan_manifest_suffix/icd.i686' + vulkan_manifest_suffix/g" $(@D)/src/intel/vulkan/meson.build \
+		$(@D)/src/intel/vulkan_hasvk/meson.build $(@D)/src/amd/vulkan/meson.build
 endef
 
 ifeq ($(BR2_x86_64),y)
@@ -337,7 +333,6 @@ endif
 ifeq ($(BR2_x86_i686),y)
     MESA3D_PRE_CONFIGURE_HOOKS += MESA3D_VULKANJSON_X86
 endif
-
 # end batocera
 
 MESA3D_CFLAGS = $(TARGET_CFLAGS)
@@ -358,11 +353,23 @@ else
 MESA3D_CONF_OPTS += -Dglvnd=disabled
 endif
 
-# batocera - remove	-Dgallium-vdpau=disabled
+ifneq ($(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_PANFROST)$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_PANFROST),)
+HOST_MESA3D_TOOLS += panfrost
+endif
+
+ifeq ($(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_IMAGINATION),y)
+HOST_MESA3D_TOOLS += imagination
+endif
+
+HOST_MESA3D_CONF_ENV = \
+	LLVM_CONFIG="$(HOST_DIR)/bin/llvm-config"
+
 HOST_MESA3D_CONF_OPTS = \
 	-Dglvnd=disabled \
 	-Dgallium-drivers=$(subst $(space),$(comma),$(HOST_MESA3D_GALLIUM_DRIVERS-y)) \
+	-Dtools=$(subst $(space),$(comma),$(HOST_MESA3D_TOOLS)) \
 	-Dinstall-mesa-clc=true \
+	-Dllvm=enabled \
 	-Dmesa-clc=enabled \
 	-Dplatforms= \
 	-Dprecomp-compiler=enabled \
@@ -376,19 +383,26 @@ endif
 HOST_MESA3D_DEPENDENCIES = \
 	host-libclc \
 	host-libdrm \
+	host-llvm \
 	host-python-mako \
 	host-python-pyyaml \
 	host-spirv-tools
 
-ifeq ($(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_PANFROST),y)
+ifneq ($(BR2_PACKAGE_MESA3D_GALLIUM_DRIVER_PANFROST)$(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_PANFROST),)
 HOST_MESA3D_INSTALL_PANFROST_COMPILE = \
-	$(INSTALL) -D -m 0755 $(@D)/build/src/panfrost/clc/panfrost_compile $(HOST_DIR)/bin/panfrost_compile
+	$(INSTALL) -D -m 0755 $(@D)/buildroot-build/src/panfrost/clc/panfrost_compile $(HOST_DIR)/bin/panfrost_compile
+endif
+
+ifeq ($(BR2_PACKAGE_MESA3D_VULKAN_DRIVER_IMAGINATION),y)
+HOST_MESA3D_INSTALL_PCO_CLC = \
+	$(INSTALL) -D -m 0755 $(@D)/buildroot-build/src/imagination/pco/uscgen/pco_clc $(HOST_DIR)/bin/pco_clc
 endif
 
 define HOST_MESA3D_INSTALL_CMDS
-	$(INSTALL) -D -m 0755 $(@D)/build/src/compiler/clc/mesa_clc $(HOST_DIR)/bin/mesa_clc
-	$(INSTALL) -D -m 0755 $(@D)/build/src/compiler/spirv/vtn_bindgen2 $(HOST_DIR)/bin/vtn_bindgen2
+	$(INSTALL) -D -m 0755 $(@D)/buildroot-build/src/compiler/clc/mesa_clc $(HOST_DIR)/bin/mesa_clc
+	$(INSTALL) -D -m 0755 $(@D)/buildroot-build/src/compiler/spirv/vtn_bindgen2 $(HOST_DIR)/bin/vtn_bindgen2
 	$(HOST_MESA3D_INSTALL_PANFROST_COMPILE)
+	$(HOST_MESA3D_INSTALL_PCO_CLC)
 endef
 
 $(eval $(meson-package))
