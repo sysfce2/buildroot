@@ -65,7 +65,7 @@ config BR2_PACKAGE_LIBGTK4_BROADWAY
 config BR2_PACKAGE_LIBGTK4_WAYLAND
 	bool "Wayland GDK backend"
 	default y
-	select BR2_PACKAGE_WAYLAND
+	depends on BR2_PACKAGE_WAYLAND # batcoera - change to depends
 	select BR2_PACKAGE_WAYLAND_PROTOCOLS
 	select BR2_PACKAGE_LIBXKBCOMMON
 	help
