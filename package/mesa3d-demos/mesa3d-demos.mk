@@ -63,8 +63,9 @@ else
 MESA3D_DEMOS_CONF_OPTS += -Dwayland=disabled
 endif
 
+# batocera - add host-glslang
 ifeq ($(BR2_PACKAGE_VULKAN_LOADER),y)
-MESA3D_DEMOS_DEPENDENCIES += vulkan-loader
+MESA3D_DEMOS_DEPENDENCIES += vulkan-loader host-glslang
 MESA3D_DEMOS_CONF_OPTS += -Dvulkan=enabled
 else
 MESA3D_DEMOS_CONF_OPTS += -Dvulkan=disabled
