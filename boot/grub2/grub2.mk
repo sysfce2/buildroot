@@ -153,14 +153,21 @@ GRUB2_CONF_ENV = \
 	TARGET_OBJCOPY="$(TARGET_OBJCOPY)" \
 	TARGET_STRIP="$(TARGET_CROSS)strip"
 
+# batocera - add host-freetype
+HOST_GRUB2_DEPENDENCIES += host-freetype
+
+# batocera - --enable-grub-mkfont
 HOST_GRUB2_CONF_OPTS = \
 	--with-platform=none \
-	--disable-grub-mkfont \
+	--enable-grub-mkfont \
 	--enable-efiemu=no \
 	ac_cv_lib_lzma_lzma_code=no \
 	--enable-device-mapper=no \
 	--enable-libzfs=no \
 	--disable-werror
+
+# batocera - add dejavu dependency
+GRUB2_DEPENDENCIES += dejavu
 
 define GRUB2_CONFIGURE_CMDS
 	$(foreach tuple, $(GRUB2_TUPLES-y), \
@@ -193,6 +200,7 @@ define GRUB2_BUILD_CMDS
 	)
 endef
 
+# batocera - add manual font build & automatic grubenv creation
 define GRUB2_INSTALL_IMAGES_CMDS
 	$(foreach tuple, $(GRUB2_TUPLES-y), \
 		@$(call MESSAGE,Installing $(tuple) to images directory)
@@ -211,6 +219,21 @@ define GRUB2_INSTALL_IMAGES_CMDS
 				$(BINARIES_DIR)/grub-eltorito.img
 		) \
 	)
+	@$(call MESSAGE,Manually compiling dejavu-mono.pf2 font)
+	$(HOST_DIR)/bin/grub-mkfont -s 28 -o $(@D)/dejavu-mono.pf2 \
+		$(STAGING_DIR)/usr/share/fonts/dejavu/DejaVuSansMono.ttf
+	@$(call MESSAGE,Creating blank grubenv environment block)
+	$(HOST_DIR)/bin/grub-editenv $(@D)/grubenv create
+	if [ -d $(BINARIES_DIR)/efi-part ]; then \
+		mkdir -p $(BINARIES_DIR)/efi-part/EFI/BOOT && \
+		cp $(@D)/dejavu-mono.pf2 $(BINARIES_DIR)/efi-part/EFI/BOOT/dejavu-mono.pf2 && \
+		cp $(@D)/grubenv $(BINARIES_DIR)/efi-part/EFI/BOOT/grubenv; \
+	fi
+	if [ -d $(BINARIES_DIR)/boot-part ]; then \
+		mkdir -p $(BINARIES_DIR)/boot-part/grub && \
+		cp $(@D)/dejavu-mono.pf2 $(BINARIES_DIR)/boot-part/grub/dejavu-mono.pf2 && \
+		cp $(@D)/grubenv $(BINARIES_DIR)/boot-part/grub/grubenv; \
+	fi
 endef
 
 ifeq ($(BR2_TARGET_GRUB2_INSTALL_TOOLS),y)
