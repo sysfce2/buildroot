@@ -24,7 +24,9 @@ WLROOTS_DEPENDENCIES = \
 	seatd \
 	udev \
 	wayland \
-	wayland-protocols
+	wayland-protocols \
+	host-glslang \
+	lcms2 # batocera, add host-glslang & lcms2
 
 WLROOTS_CONF_OPTS = -Dexamples=false -Dxcb-errors=disabled -Dlibliftoff=disabled
 
