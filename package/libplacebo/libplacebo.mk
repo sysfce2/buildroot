@@ -15,9 +15,9 @@ LIBPLACEBO_INSTALL_STAGING = YES
 # batcoera - add the options below...
 LIBPLACEBO_CONF_OPTS = -Ddemos=false
 
-ifeq ($(BR2_PACKAGE_VULKAN_HEADERS)$(BR2_PACKAGE_VULKAN_LOADER),yy)
+ifeq ($(BR2_PACKAGE_MESA3D_VULKAN_DRIVER)$(BR2_PACKAGE_VULKAN_LOADER),yy)
 LIBPLACEBO_CONF_OPTS += -Dvulkan=enabled
-LIBPLACEBO_DEPENDENCIES += vulkan-headers vulkan-loader
+LIBPLACEBO_DEPENDENCIES += mesa3d vulkan-loader
 else
 LIBPLACEBO_CONF_OPTS += -Dvulkan=disabled
 endif

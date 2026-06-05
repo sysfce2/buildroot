@@ -232,9 +232,9 @@ MPV_CONF_OPTS += -Dcuda-hwaccel=disabled -Dcuda-interop=disabled
 endif
 
 # batocera - add vulkan
-ifeq ($(BR2_PACKAGE_VULKAN_HEADERS)$(BR2_PACKAGE_VULKAN_LOADER),yy)
+ifeq ($(BR2_PACKAGE_MESA3D_VULKAN_DRIVER)$(BR2_PACKAGE_VULKAN_LOADER),yy)
 MPV_CONF_OPTS += -Dvulkan=enabled
-MPV_DEPENDENCIES += vulkan-headers vulkan-loader
+MPV_DEPENDENCIES += mesa3d vulkan-loader
 else
 MPV_CONF_OPTS += -Dvulkan=disabled
 endif
