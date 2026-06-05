@@ -3,8 +3,8 @@
 # wlroots
 #
 ################################################################################
-# batocera - downgrade (align to compatible labwc release version)
-WLROOTS_VERSION = 0.19.3
+
+WLROOTS_VERSION = 0.20.1
 WLROOTS_SITE = https://gitlab.freedesktop.org/wlroots/wlroots/-/releases/$(WLROOTS_VERSION)/downloads
 WLROOTS_LICENSE = MIT
 WLROOTS_LICENSE_FILES = LICENSE
